@@ -1,7 +1,8 @@
-1477978805144	geckodriver	INFO	Listening on 127.0.0.1:52894
-1477978805499	mozprofile::profile	INFO	Using profile path C:\Users\wanglei\AppData\Local\Temp\rust_mozprofile.xpgVuahyOUrU
-1477978805508	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
-1477978805594	geckodriver::marionette	INFO	Connecting to Marionette on localhost:52898
+1478007565334	geckodriver	INFO	Listening on 127.0.0.1:52450
+1478007567328	mozprofile::profile	INFO	Using profile path C:\Users\ADMINI~1\AppData\Local\Temp\rust_mozprofile.CW1lhhxEnMzv
+1478007567334	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1478007567345	geckodriver::marionette	INFO	Connecting to Marionette on localhost:52474
+8
 1477978809554	Marionette	INFO	Listening on port 52898
 1477978814303	Marionette	INFO	startBrowser d2e1ebcc-397a-484a-832b-28ed5e4972a6
 JavaScript error: http://oa.bjtelecom.net/, line 1: TypeError: window.event is undefined

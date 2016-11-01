@@ -4,16 +4,21 @@ from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 from util import downloadPDF
-dr = webdriver.Firefox()
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+
+dr = webdriver.Ie()
 dr.maximize_window()
 dr.delete_all_cookies()
+
 dr.get("http://oa.bjtelecom.net/")
 dr.find_element_by_name('Username').send_keys("A02373")
 dr.find_element_by_name('Password').send_keys("a02373")
 dr.find_element_by_class_name('login-submit').click()
 time.sleep(3)
 cookie = dr.get_cookies()
-
 dr.get('http://web.bjtelecom.net/ent_bpms/oa/newsgs/index.jsp?loginedUserID=0')
 time.sleep(3)
 
@@ -23,9 +28,22 @@ time.sleep(3)
 def jtNews(soup):
     jtxw = soup.select('#jtxwContent > dl')
     for item in jtxw:
-        print item.a.string
+        #print item.a.string
         print item.a['href']
-        print item.dd.string.strip()
+        #print item.dd.string.strip()
+        newsUrl = item.a['href']
+        if(newsUrl == '*'):
+            continue
+        dr.get(newsUrl)
+        html1 = dr.page_source
+        soup1 = BeautifulSoup(html1, 'lxml')
+        print soup1.find('h2').contents
+        content = soup1.div
+        content['class']="wz-content"
+        print content
+        newsContent = soup1.find_all(id="pageContent")
+        break
+
 
 
 #省公司新闻
@@ -149,7 +167,7 @@ soup = BeautifulSoup(html, 'lxml')
 # jtNews(soup)
 #
 print "*****************省公司新闻*********************"
-sgsNews(soup, dr)
+jtNews(soup)
 #
 # print "*****************集团公告*********************"
 # jtAnnouncement(soup)
