@@ -4,6 +4,7 @@ from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 from util import downloadPDF
+import mysql.connector
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -74,9 +75,31 @@ def sgsAnnouncement(soup):
 #电信信息
 def dxInfo(soup):
     dxxx = soup.select('#dxxxContent > ul > li')
+    conn = mysql.connector.connect(user='root', password='password', database='test', use_unicode=True)
+    cursor=conn.cursor()
+    #cursor.execute("create table dxxx (newsId int(4) primary key not  null  auto_increment, newsReadTimes varchar(20), newsTitle varchar(100), newsCom varchar(20), newsDate varchar(20), newsContent varchar(20000), newsOrigin varchar(20))")
     for item in dxxx:
-        print item.a.string
+        #print item.a.string
         print item.a['href']
+        dxxxUrl = item.a['href']
+        dr.get(dxxxUrl)
+        html1 = dr.page_source
+        #print html1
+        soup1 = BeautifulSoup(html1, 'html.parser')
+        newsReadTimes = soup1.find(id='comeinn').get_text()
+        newsTitle = soup1.find("h2", class_ = "wz-rt-h2").get_text()
+        newsCom = soup1.find("div", class_ = "wz-rt-ly").get_text()
+        newsDate = soup1.find("div", class_ = "wz-rt-sc").get_text()
+        newsContent = soup1.find("div", class_ = "wz-content").get_text()
+        newsOrigin = soup1.find("span", class_ = "gs").get_text()
+        cursor.execute("insert into dxxx (newsReadTimes, newsTitle, newsCom, newsDate, newsContent, newsOrigin) values (%s, %s, %s, %s, %s, %s)", [newsReadTimes, newsTitle, newsCom, newsDate, newsContent, newsOrigin])
+    conn.commit()
+    cursor.close()
+    cursor = conn.cursor()
+    cursor.execute('select * from dxxx')
+    values = cursor.fetchall()
+    cursor.close()
+    conn.close()
 
 #建言献策
 def suggest(soup):
@@ -166,8 +189,8 @@ soup = BeautifulSoup(html, 'lxml')
 # print "*****************集团新闻*********************"
 # jtNews(soup)
 #
-print "*****************省公司新闻*********************"
-jtNews(soup)
+#print "*****************省公司新闻*********************"
+#jtNews(soup)
 #
 # print "*****************集团公告*********************"
 # jtAnnouncement(soup)
@@ -175,8 +198,14 @@ jtNews(soup)
 # print "*****************省公司公告*********************"
 # sgsAnnouncement(soup)
 #
-# print "*****************电信信息*********************"
-# dxInfo(soup)
+print u"*****************电信信息*********************"
+try:
+    dxInfo(soup)
+except:
+    file = open("error.log", 'w')
+    sys.stdout = file
+    print "dxxx parse error"
+    file.close()
 #
 # print "*****************建言献策*********************"
 # suggest(soup)
